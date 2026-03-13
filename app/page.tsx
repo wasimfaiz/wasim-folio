@@ -46,6 +46,14 @@ export default function Home() {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <div ref={containerRef} className="relative bg-black text-white selection:bg-white selection:text-black overflow-x-hidden">
@@ -205,7 +213,7 @@ export default function Home() {
                  >
                     <div className="flex items-center gap-6 md:gap-12">
                       <span className="text-sm md:text-xl font-outfit text-white/20">{service.id}</span>
-                      <h3 className="text-3xl md:text-6xl font-bold uppercase transition-all group-hover:md:pl-4">{window.innerWidth < 768 ? service.title : service.full}</h3>
+                      <h3 className="text-3xl md:text-6xl font-bold uppercase transition-all group-hover:md:pl-4">{isMobile ? service.title : service.full}</h3>
                     </div>
                     <div className="flex items-center gap-4 md:gap-8 mt-2 md:mt-0 ml-10 md:ml-0">
                       <p className="text-white/40 font-inter text-[10px] md:text-sm uppercase tracking-widest">{service.desc}</p>
