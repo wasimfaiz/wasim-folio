@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence, useSpring } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
-import { ArrowUpRight, Github, Linkedin, Twitter, Mail, Code2, Palette, Zap, Cpu, Menu, X } from "lucide-react";
+import { ArrowUpRight, Github, Linkedin, Twitter, Mail, Code2, Palette, Zap, Cpu, Menu, X, ArrowRight } from "lucide-react";
 
 // --- Components ---
 
@@ -55,6 +55,42 @@ export default function Home() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Horizontal Scroll Setup
+  const projectSectionRef = useRef(null);
+  const { scrollYProgress: projectScrollProgress } = useScroll({
+    target: projectSectionRef,
+  });
+
+  const x = useTransform(projectScrollProgress, [0, 1], ["0%", "-66.6%"]);
+  const smoothX = useSpring(x, { stiffness: 100, damping: 30, restDelta: 0.001 });
+
+  const projects = [
+    {
+      id: "01",
+      title: "Metaverse.X",
+      category: "Creative Development",
+      tags: ["Three.js", "WebGl", "Next.js"],
+      color: "bg-purple-900",
+      img: "/project.png"
+    },
+    {
+      id: "02",
+      title: "Quantum SaaS",
+      category: "Industrial Branding",
+      tags: ["Tailwind", "Framer", "UI/UX"],
+      color: "bg-blue-900",
+      img: "/project.png"
+    },
+    {
+      id: "03",
+      title: "Cyber-V",
+      category: "Hardware Interface",
+      tags: ["React", "API", "Hardware"],
+      color: "bg-emerald-900",
+      img: "/project.png"
+    },
+  ];
+
   return (
     <div ref={containerRef} className="relative bg-black text-white selection:bg-white selection:text-black overflow-x-hidden">
       {/* 1. CINEMATIC CURSOR / NOISE OVERLAY */}
@@ -66,7 +102,6 @@ export default function Home() {
           <div className="font-bold text-lg md:text-xl cursor-pointer">WASIM FAIZ ©</div>
         </Magnetic>
         
-        {/* Desktop Nav */}
         <div className="hidden md:flex gap-12 font-medium">
           {["Work", "About", "Contact"].map((item) => (
             <Magnetic key={item}>
@@ -78,14 +113,12 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Mobile Toggle */}
         <div className="md:hidden">
           <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2 z-[110] relative">
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
 
-        {/* Mobile Overlay */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div 
@@ -113,7 +146,7 @@ export default function Home() {
       </nav>
 
       <main className="relative">
-        {/* 3. HERO: RESPONSIVE TYPOGRAPHY */}
+        {/* 3. HERO */}
         <section id="hero" className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden section-padding bg-[#0a0a0a]">
           <div className="container max-w-7xl mx-auto relative z-10">
             <motion.div 
@@ -160,7 +193,7 @@ export default function Home() {
           />
         </section>
 
-        {/* 4. ABOUT: STACKED ON MOBILE */}
+        {/* 4. ABOUT */}
         <section id="about" className="section-padding bg-black">
           <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-start">
             <div className="lg:col-span-8">
@@ -191,7 +224,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 5. EXPERTISE: RESPONSIVE HOVER LIST */}
+        {/* 5. EXPERTISE */}
         <section className="section-padding bg-[#050505]">
            <div className="max-w-7xl mx-auto">
              <div className="mb-12 md:mb-24 flex items-end justify-between">
@@ -227,54 +260,73 @@ export default function Home() {
            </div>
         </section>
 
-        {/* 6. PROJECTS: RESPONSIVE CARDS */}
-        <section id="work" className="section-padding bg-black overflow-hidden px-4 md:px-12">
-           <div className="max-w-7xl mx-auto mb-12 md:mb-20">
-              <h2 className="text-5xl md:text-[10vw] font-bold uppercase leading-[0.8]">Selected Projects</h2>
-           </div>
+        {/* 6. CREATIVE PROJECTS: HORIZONTAL PIN SCROLL */}
+        <section id="work" ref={projectSectionRef} className="relative h-[300vh] bg-black">
+          <div className="sticky top-0 h-screen flex items-center overflow-hidden">
+            <motion.div style={{ x: isMobile ? "0%" : smoothX }} className="flex gap-0 md:gap-24 px-6 md:px-[10vw]">
+              {/* Intro project tile */}
+              <div className="w-[80vw] md:w-[40vw] flex flex-col justify-center flex-shrink-0">
+                <span className="text-purple-500 font-bold uppercase tracking-widest text-sm mb-4">Portfolio — 2026</span>
+                <h2 className="text-6xl md:text-8xl font-bold uppercase leading-[0.8]">Selected <br/> Work</h2>
+                <div className="mt-12 flex items-center gap-4 text-white/30">
+                  <ArrowRight />
+                  <p className="uppercase tracking-widest text-xs">Swipe or Scroll to Explore</p>
+                </div>
+              </div>
 
-           <div className="space-y-24 md:space-y-40">
-             {[
-               { title: "Metaverse.X", category: "Full-Stack • Three.js", color: "bg-purple-600/20" },
-               { title: "Quantum SaaS", category: "Branding • React", color: "bg-blue-600/20" },
-             ].map((project) => (
-               <motion.div 
-                 key={project.title}
-                 initial={{ y: 50, opacity: 0 }}
-                 whileInView={{ y: 0, opacity: 1 }}
-                 viewport={{ once: true, margin: "-50px" }}
-                 className="group relative"
-               >
-                 <div className={`relative aspect-[16/9] md:aspect-[16/8] rounded-sm overflow-hidden ${project.color}`}>
-                   <Image 
-                     src="/project.png" 
-                     alt={project.title} 
-                     fill 
-                     className="object-cover scale-110 group-hover:scale-100 transition-transform duration-1000 opacity-60 md:opacity-40 group-hover:opacity-100" 
-                   />
-                   <div className="absolute inset-0 bg-black/30 md:group-hover:bg-transparent transition-colors duration-500" />
-                   <div className="absolute top-6 left-6 md:top-12 md:left-12">
-                     <div className="px-3 py-1 md:px-4 md:py-2 rounded-full border border-white/20 backdrop-blur-md text-[10px] md:text-xs uppercase font-bold">Case Study</div>
-                   </div>
-                 </div>
-                 <div className="mt-6 md:mt-8 flex justify-between items-start">
-                    <div>
-                      <h3 className="text-3xl md:text-7xl font-bold uppercase">{project.title}</h3>
-                      <p className="text-white/40 mt-1 md:mt-2 text-sm">{project.category}</p>
-                    </div>
-                    <Magnetic>
-                      <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-white text-black flex items-center justify-center -mt-2">
-                        <ArrowUpRight size={20} />
+              {projects.map((project) => (
+                <div key={project.id} className="w-[90vw] md:w-[65vw] flex-shrink-0 flex items-center">
+                  <div className="relative w-full aspect-[4/3] md:aspect-[16/10] group">
+                    {/* Project Reveal */}
+                    <div className="relative w-full h-full overflow-hidden rounded-sm">
+                      <Image 
+                        src={project.img} 
+                        alt={project.title} 
+                        fill 
+                        className="object-cover scale-110 group-hover:scale-100 transition-transform duration-[1.5s] ease-out grayscale group-hover:grayscale-0" 
+                      />
+                      <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors duration-700" />
+                      
+                      {/* Floating Project Info */}
+                      <div className="absolute top-8 left-8 md:top-12 md:left-12 flex flex-col gap-4">
+                        <span className="text-2xl md:text-4xl font-outfit text-white/40">{project.id}</span>
+                        <div className="flex flex-wrap gap-2">
+                          {project.tags.map(tag => (
+                            <span key={tag} className="px-3 py-1 rounded-full border border-white/20 backdrop-blur-md text-[10px] uppercase font-bold tracking-widest">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
                       </div>
-                    </Magnetic>
-                 </div>
-               </motion.div>
-             ))}
-           </div>
+
+                      <div className="absolute bottom-8 right-8 md:bottom-12 md:right-12">
+                        <Magnetic>
+                          <div className="w-16 h-16 md:w-24 md:h-24 rounded-full bg-white text-black flex items-center justify-center scale-0 group-hover:scale-100 transition-transform duration-500 shadow-2xl">
+                             <ArrowUpRight size={32} />
+                          </div>
+                        </Magnetic>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-8 flex justify-between items-baseline">
+                      <h3 className="text-4xl md:text-7xl font-bold uppercase tracking-tighter group-hover:italic transition-all duration-500">{project.title}</h3>
+                      <p className="hidden md:block text-white/30 text-sm uppercase tracking-widest border-l border-white/20 pl-4">{project.category}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              
+              {/* Outro tile */}
+              <div className="w-[80vw] md:w-[40vw] flex flex-col justify-center flex-shrink-0">
+                <h2 className="text-4xl md:text-6xl font-bold uppercase text-white/20">More Comin Soon...</h2>
+                <a href="#contact" className="mt-8 text-xl underline underline-offset-8 decoration-purple-500 hover:text-purple-400 transition-colors">Start a Project</a>
+              </div>
+            </motion.div>
+          </div>
         </section>
 
-        {/* 7. CONTACT: RESPONSIVE FORM & SOCIALS */}
-        <section id="contact" className="section-padding bg-[#0a0a0a] min-h-screen flex flex-col justify-center">
+        {/* 7. CONTACT */}
+        <section id="contact" className="relative z-10 section-padding bg-[#0a0a0a] min-h-screen flex flex-col justify-center">
           <div className="max-w-7xl mx-auto w-full">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-24">
                <div className="text-center lg:text-left">
@@ -318,7 +370,7 @@ export default function Home() {
         </section>
       </main>
       
-      {/* GLOBAL FOOTER BAR - Hidden on small mobile */}
+      {/* GLOBAL FOOTER BAR */}
       <footer className="hidden sm:flex fixed bottom-0 left-0 w-full p-6 md:p-8 pointer-events-none justify-between items-end z-40 text-[8px] md:text-[10px] uppercase tracking-[0.3em] font-bold text-white/20">
          <div>High-End Performance • 2026</div>
          <div>Wasim Faiz • Creator</div>
