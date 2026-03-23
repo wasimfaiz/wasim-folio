@@ -24,8 +24,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark selection:bg-white selection:text-black translate-z-0">
-      <body className={`${outfit.variable} ${inter.variable} bg-black font-sans antialiased overflow-x-hidden`}>
+    <html
+      lang="en"
+      className="dark selection:bg-white selection:text-black translate-z-0"
+      suppressHydrationWarning
+    >
+      <body
+        className={`${outfit.variable} ${inter.variable} bg-black font-sans antialiased overflow-x-hidden`}
+        suppressHydrationWarning
+      >
         <SmoothScroll>
           {children}
         </SmoothScroll>
