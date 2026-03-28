@@ -662,7 +662,7 @@ export default function Home() {
                   viewport={{ once: true, amount: 0.4 }}
                   transition={{ delay: 0.2, duration: 0.8 }}
                 >
-                  As Wasim Faiz, I inhabit the intersection of design intuition and technical precision. I craft digital landscapes that don&apos;t just exist—they command attention.
+                  I blend design instinct with technical precision to build digital experiences that feel refined, immersive, and impossible to ignore. Every interface is shaped to leave a lasting impression, not just fill a screen.
                 </motion.p>
                 <motion.p
                   initial={{ opacity: 0, y: 24 }}
@@ -670,7 +670,7 @@ export default function Home() {
                   viewport={{ once: true, amount: 0.4 }}
                   transition={{ delay: 0.32, duration: 0.8 }}
                 >
-                  My philosophy is simple: strip away the unnecessary until only the essential remains. Precision, performance, and poetry in motion.
+                  My approach is rooted in clarity and intent: remove the noise, elevate what matters, and let performance, motion, and visual restraint do the talking.
                 </motion.p>
               </motion.div>
             </div>
